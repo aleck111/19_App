@@ -16,7 +16,13 @@ otherspecies <- read_xlsx(here("data/Zoes_data/Database_2024.xlsx"),
   clean_names() 
 
 trips_w2s <- read_xlsx(here("data/Zoes_data/Database_2024.xlsx"), 
-                       sheet = "Trips") |>
+                       sheet = "Trips",
+                       col_types = c("numeric", "numeric", "numeric", "date",
+                                     "date", "date", "date", "date", "text",
+                                     "text", "text", "numeric", "numeric",
+                                     "numeric", "numeric", "text", "text", 
+                                     "text", "date", "text", "text",
+                                     "text", "text", "text", "text")) |>
   clean_names() |>
   mutate(time_start = format(time_start, format = "%H:%M:%S")) |>
   mutate(time_start = as.POSIXct(paste(date, time_start), 
@@ -107,7 +113,8 @@ sghts_w2s$platform <- "Whale2Sea"
 
 
 # Load data from Whale Safari trip reports ####
-ws <- read_xlsx(here("data/WS_data/trip_reports_2003_2023_clean.xlsx")) |>
+ws <- read_xlsx(here("data/WS_data/trip_reports_2003_2023_clean.xlsx"),
+                col_types = c()) |>
   clean_names() |>
   rename(id = trip_id)
 
@@ -124,7 +131,8 @@ trips_wsa <- ws |>
 sghts_wsa <- ws |>
   mutate(trip_id = 10000 + as.numeric(factor(id))) |>
   select(date, trip_id, species_common_name, lat_dec, long_dec) |>
-  mutate(species_common_name = as.factor(species_common_name),
+  mutate(date = ymd(date),
+         species_common_name = as.factor(species_common_name),
          species_common_name = fct_recode(species_common_name,
             "Atlantic white-sided dolphin" = "Atlantic White Sided Dolphins",
             "Harbor porpoise" = "Harbour Porpoise",
